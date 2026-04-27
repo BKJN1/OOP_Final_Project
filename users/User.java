@@ -57,6 +57,10 @@ public abstract class User implements Observer, Serializable, Comparable<User> {
         return email;
     }
 
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
     public List<Notification> getNotifications() {
         return new ArrayList<>(notifications);
     }

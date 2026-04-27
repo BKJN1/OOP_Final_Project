@@ -52,7 +52,39 @@ Run:
 java Main
 ```
 
-The demo creates sample users, courses, marks, research papers, news, requests, reports, and checks serialization by writing and reading `university.dat`.
+The program starts with the main menu:
+
+```text
+1. Login
+2. Search (regular expressions)
+3. Exit
+```
+
+After login, the program opens a role-specific menu. For example, manager users see manager actions, students see student actions, teachers see teacher actions, and so on.
+
+Sample accounts:
+
+| Role | Username | Password |
+| --- | --- | --- |
+| Admin | `admin` | `1234` |
+| Manager | `manager` | `1234` |
+| Dean | `dean` | `1234` |
+| Professor | `prof` | `1234` |
+| Teacher | `lector` | `1234` |
+| Student | `student` | `1234` |
+| Graduate student | `grad` | `1234` |
+| Tech support | `support` | `1234` |
+
+The regex search checks users, courses, news, and research papers. Example regex queries:
+
+```text
+Kim
+CSCI.*
+Research|Analytics
+student
+```
+
+On exit, the application saves current data to `university.dat`.
 
 ## Notes for defense
 

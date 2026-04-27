@@ -2,7 +2,6 @@ import academic.Course;
 import academic.Lesson;
 import academic.Mark;
 import enums.CourseType;
-import enums.Format;
 import enums.LessonType;
 import enums.ManagerType;
 import enums.TeacherPosition;
@@ -11,11 +10,8 @@ import java.time.LocalDate;
 import research.Journal;
 import research.ResearchPaper;
 import research.ResearchProject;
-import services.AuthService;
-import services.CourseService;
+import services.ConsoleMenu;
 import services.NewsService;
-import services.ResearchService;
-import storage.DataManager;
 import storage.Database;
 import system.Request;
 import users.Admin;
@@ -28,16 +24,16 @@ import users.TechSupportSpecialist;
 
 public class Main {
     public static void main(String[] args) {
-        try {
-            Database database = new Database();
-            AuthService authService = new AuthService(database);
-            CourseService courseService = new CourseService(database);
-            NewsService newsService = new NewsService(database);
-            ResearchService researchService = new ResearchService(database);
+        new ConsoleMenu(seedDatabase()).start();
+    }
 
-            Admin admin = new Admin("A1", "admin", "1234", "Dana Admin", "admin@uni.kz");
+    private static Database seedDatabase() {
+        try {
+            Database db = new Database();
+            NewsService seedNews = new NewsService(db);
             Manager manager = new Manager("M1", "manager", "1234", "Aruzhan Manager", "manager@uni.kz",
                     "OR", ManagerType.OR);
+            Admin admin = new Admin("A1", "admin", "1234", "Dana Admin", "admin@uni.kz");
             Dean dean = new Dean("D1", "dean", "1234", "Askar Dean", "dean@uni.kz", "SITE");
             Teacher professor = new Teacher("T1", "prof", "1234", "Professor Kim", "kim@uni.kz",
                     "SITE", TeacherPosition.PROFESSOR);
@@ -50,34 +46,32 @@ public class Main {
             TechSupportSpecialist support = new TechSupportSpecialist("TS1", "support", "1234",
                     "Timur Support", "support@uni.kz", "IT");
 
-            admin.addUser(database, admin);
-            admin.addUser(database, manager);
-            admin.addUser(database, dean);
-            admin.addUser(database, professor);
-            admin.addUser(database, lector);
-            admin.addUser(database, bachelor);
-            admin.addUser(database, master);
-            admin.addUser(database, support);
+            db.addUser(admin);
+            db.addUser(manager);
+            db.addUser(dean);
+            db.addUser(professor);
+            db.addUser(lector);
+            db.addUser(bachelor);
+            db.addUser(master);
+            db.addUser(support);
 
-            Course oop = manager.addCourse(database, "CSCI2106", "Object-Oriented Programming", 5,
+            Course oop = manager.addCourse(db, "CSCI2106", "Object-Oriented Programming", 5,
                     CourseType.MAJOR, "SITE", 2);
-            Course research = manager.addCourse(database, "RES5001", "Research Methods", 6,
+            Course research = manager.addCourse(db, "RES5001", "Research Methods", 6,
                     CourseType.MAJOR, "SITE", 1);
             manager.assignCourseToTeacher(oop, professor);
             manager.assignCourseToTeacher(oop, lector);
+            manager.assignCourseToTeacher(research, professor);
             oop.addLesson(new Lesson(LessonType.LECTURE, "A-101", "Monday 10:00", professor));
             oop.addLesson(new Lesson(LessonType.PRACTICE, "B-204", "Wednesday 15:00", lector));
 
-            authService.login("student", "1234");
-            courseService.register(bachelor, oop);
-            courseService.register(master, research);
+            bachelor.registerForCourse(oop);
+            master.registerForCourse(research);
             professor.putMark(bachelor, oop, new Mark(28, 27, 35));
             professor.putMark(master, research, new Mark(30, 30, 35));
-            bachelor.rateTeacher(professor, 5);
-            authService.logout();
 
             Journal journal = new Journal("KBTU Research Journal");
-            database.addJournal(journal);
+            db.addJournal(journal);
             journal.subscribe(bachelor);
             journal.subscribe(master);
 
@@ -91,8 +85,8 @@ public class Main {
             professor.getResearchProfile().addPaper(p2);
             professor.getResearchProfile().addPaper(p3);
             journal.publish(p1);
-            newsService.announcePaper(p1.getTitle());
-            newsService.announceTopCitedResearcher();
+            seedNews.announcePaper(p1.getTitle());
+            seedNews.announceTopCitedResearcher();
             master.assignSupervisor(professor.getResearchProfile());
 
             ResearchProject project = new ResearchProject("Student Performance Analytics");
@@ -100,42 +94,12 @@ public class Main {
             project.join(master);
             project.publishPaper(p1);
 
-            Request complaint = professor.sendComplaint(bachelor, dean, UrgencyLevel.HIGH, "Repeated late submissions");
-            dean.signRequest(complaint);
-            database.addRequest(complaint);
-            support.seeNewRequests(database);
-            support.accept(complaint);
-
-            System.out.println("=== Authentication user ===");
-            System.out.println(authService.login("admin", "1234"));
-            authService.logout();
-
-            System.out.println("\n=== Courses ===");
-            database.getCourses().forEach(System.out::println);
-
-            System.out.println("\n=== Transcript ===");
-            System.out.println(bachelor.getTranscript());
-
-            System.out.println("\n=== Research papers by citations ===");
-            researchService.printAllPapers(ResearchPaper.byCitations()).forEach(System.out::println);
-            System.out.println("Citation plain: " + p1.getCitation(Format.PLAIN_TEXT));
-            System.out.println("Citation bibtex: " + p1.getCitation(Format.BIBTEX));
-
-            System.out.println("\n=== News ===");
-            database.getNews().forEach(System.out::println);
-
-            System.out.println("\n=== Requests ===");
-            database.getRequests().forEach(System.out::println);
-
-            System.out.println("\n=== Report ===");
-            System.out.println(manager.createAcademicReport(database));
-
-            DataManager.getInstance("university.dat").save(database);
-            Database loaded = DataManager.getInstance("university.dat").load();
-            System.out.println("\nSerialization works, loaded users: " + loaded.getUsers().size());
+            Request request = professor.sendComplaint(bachelor, dean, UrgencyLevel.HIGH, "Repeated late submissions");
+            dean.signRequest(request);
+            db.addRequest(request);
+            return db;
         } catch (Exception e) {
-            System.err.println("Demo failed: " + e.getMessage());
-            e.printStackTrace();
+            throw new IllegalStateException("Could not seed database: " + e.getMessage(), e);
         }
     }
 }
