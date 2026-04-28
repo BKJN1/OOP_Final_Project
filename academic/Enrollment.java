@@ -17,6 +17,14 @@ public class Enrollment implements Serializable {
         this.course = course;
     }
 
+    public Student getStudent() {
+        return student;
+    }
+
+    public Course getCourse() {
+        return course;
+    }
+
     public void approve() {
         approved = true;
     }

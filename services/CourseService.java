@@ -16,10 +16,15 @@ public class CourseService {
     }
 
     public Enrollment register(Student student, Course course) throws CreditLimitExceededException, TooManyFailsException {
-        student.registerForCourse(course);
         Enrollment enrollment = new Enrollment(student, course);
-        enrollment.approve();
-        database.addLog(new Log(student, "Registered for " + course.getCode()));
+        database.addEnrollment(enrollment);
+        database.addLog(new Log(student, "Requested registration for " + course.getCode()));
         return enrollment;
+    }
+
+    public void approveEnrollment(Enrollment enrollment) throws CreditLimitExceededException, TooManyFailsException {
+        enrollment.getStudent().registerForCourse(enrollment.getCourse());
+        enrollment.approve();
+        database.addLog(new Log(enrollment.getStudent(), "Registration approved for " + enrollment.getCourse().getCode()));
     }
 }

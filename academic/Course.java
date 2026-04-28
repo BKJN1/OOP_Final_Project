@@ -38,12 +38,40 @@ public class Course implements Serializable, Comparable<Course> {
         return title;
     }
 
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
     public int getCredits() {
         return credits;
     }
 
+    public void setCredits(int credits) {
+        this.credits = credits;
+    }
+
     public CourseType getType() {
         return type;
+    }
+
+    public void setType(CourseType type) {
+        this.type = type;
+    }
+
+    public String getIntendedMajor() {
+        return intendedMajor;
+    }
+
+    public void setIntendedMajor(String intendedMajor) {
+        this.intendedMajor = intendedMajor;
+    }
+
+    public int getIntendedYear() {
+        return intendedYear;
+    }
+
+    public void setIntendedYear(int intendedYear) {
+        this.intendedYear = intendedYear;
     }
 
     public void addInstructor(Teacher teacher) {

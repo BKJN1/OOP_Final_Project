@@ -1,6 +1,7 @@
 package storage;
 
 import academic.Course;
+import academic.Enrollment;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -18,6 +19,7 @@ public class Database implements Serializable {
 
     private final List<User> users = new ArrayList<>();
     private final List<Course> courses = new ArrayList<>();
+    private final List<Enrollment> enrollments = new ArrayList<>();
     private final List<News> news = new ArrayList<>();
     private final List<Request> requests = new ArrayList<>();
     private final List<Log> logs = new ArrayList<>();
@@ -48,6 +50,20 @@ public class Database implements Serializable {
 
     public List<Course> getCourses() {
         return courses.stream().sorted().toList();
+    }
+
+    public void addEnrollment(Enrollment enrollment) {
+        enrollments.add(enrollment);
+    }
+
+    public List<Enrollment> getEnrollments() {
+        return new ArrayList<>(enrollments);
+    }
+
+    public List<Enrollment> getPendingEnrollments() {
+        return enrollments.stream()
+                .filter(e -> !e.isApproved())
+                .toList();
     }
 
     public List<Student> getStudents() {

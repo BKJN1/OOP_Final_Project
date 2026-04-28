@@ -62,6 +62,12 @@ The program starts with the main menu:
 
 After login, the program opens a role-specific menu. For example, manager users see manager actions, students see student actions, teachers see teacher actions, and so on.
 
+Recent menu features:
+
+- Teachers can use `Manage course` to view course details, update title/credits/type, add lessons, and view lessons.
+- Students can use `Student organizations` to join an organization as a member or become its head.
+- Managers can use `Approve students registration` to approve pending course registration requests.
+
 Sample accounts:
 
 | Role | Username | Password |

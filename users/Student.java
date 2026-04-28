@@ -24,7 +24,7 @@ public class Student extends User implements CanResearch {
     private Researcher researchProfile;
     private final List<Course> courses = new ArrayList<>();
     private final Map<Course, Mark> marks = new HashMap<>();
-    private final List<String> organizations = new ArrayList<>();
+    private final Map<String, String> organizations = new HashMap<>();
 
     public Student(String id, String username, String password, String fullName, String email,
                    String major, int yearOfStudy) {
@@ -82,7 +82,15 @@ public class Student extends User implements CanResearch {
     }
 
     public void joinOrganization(String organization) {
-        organizations.add(organization);
+        organizations.put(organization, "MEMBER");
+    }
+
+    public void leadOrganization(String organization) {
+        organizations.put(organization, "HEAD");
+    }
+
+    public Map<String, String> getOrganizations() {
+        return new HashMap<>(organizations);
     }
 
     public void setResearchProfile(Researcher researchProfile) {

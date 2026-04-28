@@ -1,9 +1,12 @@
 package services;
 
 import academic.Course;
+import academic.Enrollment;
+import academic.Lesson;
 import academic.Mark;
 import enums.CourseType;
 import enums.Format;
+import enums.LessonType;
 import enums.UrgencyLevel;
 import exceptions.UnauthorizedActionException;
 import interfaces.CanResearch;
@@ -148,11 +151,12 @@ public class ConsoleMenu {
             System.out.println("1. View courses");
             System.out.println("2. Add course");
             System.out.println("3. Assign course to teacher");
-            System.out.println("4. Create academic report");
-            System.out.println("5. Manage news");
-            System.out.println("6. View students by GPA");
-            System.out.println("7. View students alphabetically");
-            System.out.println("8. Logout");
+            System.out.println("4. Approve students registration");
+            System.out.println("5. Create academic report");
+            System.out.println("6. Manage news");
+            System.out.println("7. View students by GPA");
+            System.out.println("8. View students alphabetically");
+            System.out.println("9. Logout");
             switch (readInt("Choose: ")) {
                 case 1:
                     database.getCourses().forEach(System.out::println);
@@ -164,19 +168,22 @@ public class ConsoleMenu {
                     assignCourseToTeacher(manager);
                     break;
                 case 4:
-                    System.out.println(manager.createAcademicReport(database));
+                    approveStudentRegistration();
                     break;
                 case 5:
+                    System.out.println(manager.createAcademicReport(database));
+                    break;
+                case 6:
                     manager.publishNews(newsService, readLine("Topic: "), readLine("Content: "));
                     System.out.println("News published.");
                     break;
-                case 6:
+                case 7:
                     manager.viewStudentsSorted(database, Student.byGpa()).forEach(System.out::println);
                     break;
-                case 7:
+                case 8:
                     manager.viewStudentsSorted(database, Comparator.comparing(Student::getFullName)).forEach(System.out::println);
                     break;
-                case 8:
+                case 9:
                     back = true;
                     break;
                 default:
@@ -191,11 +198,12 @@ public class ConsoleMenu {
             System.out.println("\n=== Teacher Menu ===");
             System.out.println("1. View my courses");
             System.out.println("2. View students of course");
-            System.out.println("3. Put mark");
-            System.out.println("4. Send message to employee");
-            System.out.println("5. Send complaint to dean");
-            System.out.println("6. Research menu");
-            System.out.println("7. Logout");
+            System.out.println("3. Manage course");
+            System.out.println("4. Put mark");
+            System.out.println("5. Send message to employee");
+            System.out.println("6. Send complaint to dean");
+            System.out.println("7. Research menu");
+            System.out.println("8. Logout");
             switch (readInt("Choose: ")) {
                 case 1:
                     teacher.getCourses().forEach(System.out::println);
@@ -207,18 +215,21 @@ public class ConsoleMenu {
                     }
                     break;
                 case 3:
-                    putMark(teacher);
+                    manageCourse(teacher);
                     break;
                 case 4:
-                    sendEmployeeMessage(teacher);
+                    putMark(teacher);
                     break;
                 case 5:
-                    sendComplaint(teacher);
+                    sendEmployeeMessage(teacher);
                     break;
                 case 6:
-                    researchMenu(teacher);
+                    sendComplaint(teacher);
                     break;
                 case 7:
+                    researchMenu(teacher);
+                    break;
+                case 8:
                     back = true;
                     break;
                 default:
@@ -238,8 +249,9 @@ public class ConsoleMenu {
             System.out.println("5. View transcript");
             System.out.println("6. Rate teacher");
             System.out.println("7. View notifications");
-            System.out.println("8. Research menu");
-            System.out.println("9. Logout");
+            System.out.println("8. Student organizations");
+            System.out.println("9. Research menu");
+            System.out.println("10. Logout");
             switch (readInt("Choose: ")) {
                 case 1:
                     database.getCourses().forEach(System.out::println);
@@ -270,9 +282,12 @@ public class ConsoleMenu {
                     student.getNotifications().forEach(System.out::println);
                     break;
                 case 8:
-                    researchMenu(student);
+                    studentOrganizationsMenu(student);
                     break;
                 case 9:
+                    researchMenu(student);
+                    break;
+                case 10:
                     back = true;
                     break;
                 default:
@@ -435,6 +450,106 @@ public class ConsoleMenu {
         System.out.println("Course added.");
     }
 
+    private static void approveStudentRegistration() {
+        Enrollment enrollment = choosePendingEnrollment();
+        if (enrollment == null) {
+            System.out.println("No pending registration selected.");
+            return;
+        }
+        try {
+            courseService.approveEnrollment(enrollment);
+            System.out.println("Registration approved.");
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
+    private static void manageCourse(Teacher teacher) {
+        Course course = chooseTeacherCourse(teacher);
+        if (course == null) {
+            System.out.println("Invalid course.");
+            return;
+        }
+
+        boolean back = false;
+        while (!back) {
+            System.out.println("\n=== Manage Course: " + course.getCode() + " ===");
+            System.out.println("1. View course details");
+            System.out.println("2. Update title");
+            System.out.println("3. Update credits");
+            System.out.println("4. Update course type");
+            System.out.println("5. Add lesson");
+            System.out.println("6. View lessons");
+            System.out.println("7. Back");
+            switch (readInt("Choose: ")) {
+                case 1:
+                    System.out.println(course);
+                    System.out.println("Major/year: " + course.getIntendedMajor() + "/" + course.getIntendedYear());
+                    System.out.println("Instructors: " + course.getInstructors());
+                    System.out.println("Students: " + course.getStudents());
+                    break;
+                case 2:
+                    course.setTitle(readLine("New title: "));
+                    System.out.println("Title updated.");
+                    break;
+                case 3:
+                    course.setCredits(readInt("New credits: "));
+                    System.out.println("Credits updated.");
+                    break;
+                case 4:
+                    course.setType(readCourseType());
+                    System.out.println("Course type updated.");
+                    break;
+                case 5:
+                    Lesson lesson = new Lesson(readLessonType(), readLine("Room: "), readLine("Time: "), teacher);
+                    course.addLesson(lesson);
+                    System.out.println("Lesson added.");
+                    break;
+                case 6:
+                    course.getLessons().forEach(System.out::println);
+                    break;
+                case 7:
+                    back = true;
+                    break;
+                default:
+                    System.out.println("Invalid option.");
+            }
+        }
+    }
+
+    private static void studentOrganizationsMenu(Student student) {
+        boolean back = false;
+        while (!back) {
+            System.out.println("\n=== Student Organizations ===");
+            System.out.println("1. View my organizations");
+            System.out.println("2. Join organization as member");
+            System.out.println("3. Become head of organization");
+            System.out.println("4. Back");
+            switch (readInt("Choose: ")) {
+                case 1:
+                    if (student.getOrganizations().isEmpty()) {
+                        System.out.println("No organizations.");
+                    } else {
+                        student.getOrganizations().forEach((name, role) -> System.out.println(name + " - " + role));
+                    }
+                    break;
+                case 2:
+                    student.joinOrganization(readLine("Organization name: "));
+                    System.out.println("Joined as member.");
+                    break;
+                case 3:
+                    student.leadOrganization(readLine("Organization name: "));
+                    System.out.println("You are head of this organization.");
+                    break;
+                case 4:
+                    back = true;
+                    break;
+                default:
+                    System.out.println("Invalid option.");
+            }
+        }
+    }
+
     private static void updateUser(Admin admin) {
         User user = chooseUser();
         if (user == null) {
@@ -476,7 +591,7 @@ public class ConsoleMenu {
         }
         try {
             courseService.register(student, course);
-            System.out.println("Registered.");
+            System.out.println("Registration request sent. Manager must approve it.");
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
@@ -522,6 +637,28 @@ public class ConsoleMenu {
         }
         int index = readInt("Course number: ") - 1;
         return index >= 0 && index < courses.size() ? courses.get(index) : null;
+    }
+
+    private static Course chooseTeacherCourse(Teacher teacher) {
+        List<Course> courses = teacher.getCourses();
+        for (int i = 0; i < courses.size(); i++) {
+            System.out.println((i + 1) + ". " + courses.get(i));
+        }
+        int index = readInt("Course number: ") - 1;
+        return index >= 0 && index < courses.size() ? courses.get(index) : null;
+    }
+
+    private static Enrollment choosePendingEnrollment() {
+        List<Enrollment> enrollments = database.getPendingEnrollments();
+        if (enrollments.isEmpty()) {
+            System.out.println("No pending registrations.");
+            return null;
+        }
+        for (int i = 0; i < enrollments.size(); i++) {
+            System.out.println((i + 1) + ". " + enrollments.get(i));
+        }
+        int index = readInt("Registration number: ") - 1;
+        return index >= 0 && index < enrollments.size() ? enrollments.get(index) : null;
     }
 
     private static User chooseUser() {
@@ -599,6 +736,13 @@ public class ConsoleMenu {
             return CourseType.FREE_ELECTIVE;
         }
         return CourseType.MAJOR;
+    }
+
+    private static LessonType readLessonType() {
+        System.out.println("1. LECTURE");
+        System.out.println("2. PRACTICE");
+        int choice = readInt("Lesson type: ");
+        return choice == 2 ? LessonType.PRACTICE : LessonType.LECTURE;
     }
 
     private static String readLine(String prompt) {
