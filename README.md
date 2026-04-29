@@ -79,15 +79,21 @@ Sample accounts:
 
 | Role | Username | Password |
 | --- | --- | --- |
-| Admin | `admin` | `1234` |
-| Manager | `manager` | `1234` |
-| Dean | `dean` | `1234` |
-| Professor | `prof` | `1234` |
-| Teacher | `lector` | `1234` |
-| Student | `student` | `1234` |
-| Graduate student | `grad` | `1234` |
-| Tech support | `support` | `1234` |
-| Research employee | `lab` | `1234` |
+| Admin | `admin1` | `1234` |
+| Manager | `manager1` | `1234` |
+| Manager | `manager2` | `1234` |
+| Dean | `dean1` | `1234` |
+| Professor/Teacher | `teacher1` | `1234` |
+| Teacher | `teacher2` | `1234` |
+| Professor/Teacher | `teacher3` | `1234` |
+| Student | `student1` | `1234` |
+| Student | `student2` | `1234` |
+| Student | `student3` | `1234` |
+| Graduate student | `grad1` | `1234` |
+| Graduate student | `grad2` | `1234` |
+| Tech support | `support1` | `1234` |
+| Tech support | `support2` | `1234` |
+| Research employee | `researcher1` | `1234` |
 
 The regex search asks for authentication and checks users, courses, news, and research papers. Example regex queries:
 

@@ -47,49 +47,88 @@ public class Main {
         try {
             Database db = new Database();
             NewsService seedNews = new NewsService(db);
-            Manager manager = (Manager) UserFactory.create("MANAGER", "M1", "manager", "1234",
+            Manager manager = (Manager) UserFactory.create("MANAGER", "M1", "manager1", "1234",
                     "Aruzhan Manager", "manager@uni.kz", "OR");
-            Admin admin = (Admin) UserFactory.create("ADMIN", "A1", "admin", "1234",
+            Manager departmentManager = (Manager) UserFactory.create("MANAGER", "M2", "manager2", "1234",
+                    "Miras Department Manager", "manager2@uni.kz", "SITE");
+            Admin admin = (Admin) UserFactory.create("ADMIN", "A1", "admin1", "1234",
                     "Dana Admin", "admin@uni.kz", "Administration");
-            Dean dean = (Dean) UserFactory.create("DEAN", "D1", "dean", "1234",
+            Dean dean = (Dean) UserFactory.create("DEAN", "D1", "dean1", "1234",
                     "Askar Dean", "dean@uni.kz", "SITE");
-            Teacher professor = (Teacher) UserFactory.create("PROFESSOR", "T1", "prof", "1234",
+            Teacher professor = (Teacher) UserFactory.create("PROFESSOR", "T1", "teacher1", "1234",
                     "Professor Kim", "kim@uni.kz", "SITE");
-            Teacher lector = (Teacher) UserFactory.create("LECTOR", "T2", "lector", "1234",
+            Teacher lector = (Teacher) UserFactory.create("LECTOR", "T2", "teacher2", "1234",
                     "Lector Lee", "lee@uni.kz", "SITE");
-            Student bachelor = (Student) UserFactory.create("STUDENT", "S1", "student", "1234",
+            Teacher oilProfessor = (Teacher) UserFactory.create("PROFESSOR", "T3", "teacher3", "1234",
+                    "Professor Omar", "omar@uni.kz", "Oil and Gas");
+            Student bachelor = (Student) UserFactory.create("STUDENT", "S1", "student1", "1234",
                     "Nursultan Student", "student@uni.kz", "SITE");
-            GraduateStudent master = (GraduateStudent) UserFactory.create("GRADUATE_STUDENT", "G1", "grad", "1234",
+            Student secondBachelor = (Student) UserFactory.create("STUDENT", "S2", "student2", "1234",
+                    "Diana Student", "student2@uni.kz", "SITE");
+            Student oilStudent = (Student) UserFactory.create("STUDENT", "S3", "student3", "1234",
+                    "Erlan Oil Student", "student3@uni.kz", "Oil and Gas");
+            GraduateStudent master = (GraduateStudent) UserFactory.create("GRADUATE_STUDENT", "G1", "grad1", "1234",
                     "Aigerim Graduate", "grad@uni.kz", "SITE");
-            TechSupportSpecialist support = (TechSupportSpecialist) UserFactory.create("SUPPORT", "TS1", "support", "1234",
+            GraduateStudent phd = (GraduateStudent) UserFactory.create("GRADUATE_STUDENT", "G2", "grad2", "1234",
+                    "Serik PhD Student", "grad2@uni.kz", "SITE");
+            TechSupportSpecialist support = (TechSupportSpecialist) UserFactory.create("SUPPORT", "TS1", "support1", "1234",
                     "Timur Support", "support@uni.kz", "IT");
-            ResearchEmployee labResearcher = (ResearchEmployee) UserFactory.create("RESEARCH_EMPLOYEE", "R1", "lab", "1234",
+            TechSupportSpecialist support2 = (TechSupportSpecialist) UserFactory.create("SUPPORT", "TS2", "support2", "1234",
+                    "Ayan Support", "support2@uni.kz", "IT");
+            ResearchEmployee labResearcher = (ResearchEmployee) UserFactory.create("RESEARCH_EMPLOYEE", "R1", "researcher1", "1234",
                     "Madina Lab Researcher", "lab@uni.kz", "Research Center");
 
             db.addUser(admin);
             db.addUser(manager);
+            db.addUser(departmentManager);
             db.addUser(dean);
             db.addUser(professor);
             db.addUser(lector);
+            db.addUser(oilProfessor);
             db.addUser(bachelor);
+            db.addUser(secondBachelor);
+            db.addUser(oilStudent);
             db.addUser(master);
+            db.addUser(phd);
             db.addUser(support);
+            db.addUser(support2);
             db.addUser(labResearcher);
 
             Course oop = manager.addCourse(db, "CSCI2106", "Object-Oriented Programming", 5,
                     CourseType.MAJOR, "SITE", 2);
             Course research = manager.addCourse(db, "RES5001", "Research Methods", 6,
                     CourseType.MAJOR, "SITE", 1);
+            Course databases = manager.addCourse(db, "CSCI2203", "Databases", 5,
+                    CourseType.MAJOR, "SITE", 2);
+            Course geology = manager.addCourse(db, "OG101", "Introduction to Oil and Gas", 5,
+                    CourseType.FREE_ELECTIVE, "Oil and Gas", 1);
+            Course entrepreneurship = manager.addCourse(db, "BUS2101", "Technology Entrepreneurship", 3,
+                    CourseType.MINOR, "Business", 2);
             manager.assignCourseToTeacher(oop, professor);
             manager.assignCourseToTeacher(oop, lector);
             manager.assignCourseToTeacher(research, professor);
+            manager.assignCourseToTeacher(databases, lector);
+            manager.assignCourseToTeacher(geology, oilProfessor);
+            manager.assignCourseToTeacher(entrepreneurship, professor);
             oop.addLesson(new Lesson(LessonType.LECTURE, "A-101", "Monday 10:00", professor));
             oop.addLesson(new Lesson(LessonType.PRACTICE, "B-204", "Wednesday 15:00", lector));
+            databases.addLesson(new Lesson(LessonType.LECTURE, "A-202", "Tuesday 12:00", lector));
+            geology.addLesson(new Lesson(LessonType.LECTURE, "OG-1", "Thursday 09:00", oilProfessor));
 
             bachelor.registerForCourse(oop);
+            bachelor.registerForCourse(geology);
+            secondBachelor.registerForCourse(oop);
+            secondBachelor.registerForCourse(databases);
+            oilStudent.registerForCourse(geology);
             master.registerForCourse(research);
+            phd.registerForCourse(research);
             professor.putMark(bachelor, oop, new Mark(28, 27, 35));
+            oilProfessor.putMark(bachelor, geology, new Mark(25, 25, 30));
+            professor.putMark(secondBachelor, oop, new Mark(30, 28, 34));
+            lector.putMark(secondBachelor, databases, new Mark(27, 26, 32));
+            oilProfessor.putMark(oilStudent, geology, new Mark(29, 29, 36));
             professor.putMark(master, research, new Mark(30, 30, 35));
+            professor.putMark(phd, research, new Mark(30, 29, 38));
 
             Journal journal = new Journal("KBTU Research Journal");
             db.addJournal(journal);
@@ -109,6 +148,8 @@ public class Main {
             professor.getResearchProfile().addPaper(p3);
             master.getResearchProfile().addPaper(p2);
             master.addDiplomaPaper(p2);
+            phd.getResearchProfile().addPaper(p3);
+            phd.addDiplomaPaper(p3);
             labResearcher.getResearchProfile().addPaper(p4);
             journal.publish(p1);
             seedNews.announcePaper(p1.getTitle());
@@ -123,6 +164,9 @@ public class Main {
             Request request = professor.sendComplaint(bachelor, dean, UrgencyLevel.HIGH, "Repeated late submissions");
             dean.signRequest(request);
             db.addRequest(request);
+            Request projectorRequest = new Request(lector, "Please check projector in B-204", UrgencyLevel.MEDIUM);
+            dean.signRequest(projectorRequest);
+            db.addRequest(projectorRequest);
             return db;
         } catch (Exception e) {
             throw new IllegalStateException("Could not seed database: " + e.getMessage(), e);
