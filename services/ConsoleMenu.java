@@ -17,8 +17,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
-import java.util.regex.Pattern;
-import java.util.regex.PatternSyntaxException;
 import research.ResearchPaper;
 import research.Researcher;
 import research.Journal;
@@ -64,9 +62,8 @@ public class ConsoleMenu {
 
         addTranslation("Language: ", "Язык: ", "Тіл: ");
         addTranslation("1. Login", "1. Войти", "1. Кіру");
-        addTranslation("2. Search (regular expressions)", "2. Поиск (регулярные выражения)", "2. Іздеу (regular expressions)");
-        addTranslation("3. Exit", "3. Выход", "3. Шығу");
-        addTranslation("4. Switch language", "4. Сменить язык", "4. Тілді ауыстыру");
+        addTranslation("2. Exit", "2. Выход", "2. Шығу");
+        addTranslation("3. Switch language", "3. Сменить язык", "3. Тілді ауыстыру");
         addTranslation("Choose: ", "Выберите: ", "Таңдаңыз: ");
         addTranslation("Username: ", "Логин: ", "Логин: ");
         addTranslation("Password: ", "Пароль: ", "Құпиясөз: ");
@@ -108,14 +105,13 @@ public class ConsoleMenu {
         addTranslation("3. View teacher of course", "3. Преподаватель курса", "3. Курстың оқытушысы");
         addTranslation("4. View marks", "4. Посмотреть оценки", "4. Бағаларды көру");
         addTranslation("5. View transcript", "5. Посмотреть транскрипт", "5. Транскрипт көру");
-        addTranslation("6. Get transcript", "6. Получить транскрипт", "6. Transkript alu");
-        addTranslation("7. Rate teacher", "7. Оценить преподавателя", "7. Оқытушыны бағалау");
-        addTranslation("8. View notifications", "8. Уведомления", "8. Хабарламалар");
-        addTranslation("9. Student organizations", "9. Студенческие организации", "9. Студенттік ұйымдар");
-        addTranslation("10. Journals", "10. Журналы", "10. Журналдар");
-        addTranslation("11. News comments", "11. Комментарии к новостям", "11. Жаңалық пікірлері");
-        addTranslation("12. Research menu", "12. Меню исследований", "12. Зерттеу мәзірі");
-        addTranslation("13. Logout", "13. Выйти из аккаунта", "13. Аккаунттан шығу");
+        addTranslation("6. Rate teacher", "6. Оценить преподавателя", "6. Оқытушыны бағалау");
+        addTranslation("7. View notifications", "7. Уведомления", "7. Хабарламалар");
+        addTranslation("8. Student organizations", "8. Студенческие организации", "8. Студенттік ұйымдар");
+        addTranslation("9. Journals", "9. Журналы", "9. Журналдар");
+        addTranslation("10. News comments", "10. Комментарии к новостям", "10. Жаңалық пікірлері");
+        addTranslation("11. Research menu", "11. Меню исследований", "11. Зерттеу мәзірі");
+        addTranslation("12. Logout", "12. Выйти из аккаунта", "12. Аккаунттан шығу");
 
         addTranslation("1. View new requests", "1. Новые запросы", "1. Жаңа сұраныстар");
         addTranslation("2. Accept request", "2. Принять запрос", "2. Сұранысты қабылдау");
@@ -142,7 +138,7 @@ public class ConsoleMenu {
         addTranslation("4. Print top cited researcher", "4. Самый цитируемый исследователь", "4. Ең көп citation алған зерттеуші");
         addTranslation("5. Print top cited researcher by school", "5. Топ исследователь по школе", "5. Мектеп бойынша топ зерттеуші");
         addTranslation("6. Print top cited researcher of year", "6. Топ исследователь года", "6. Жылдың топ зерттеушісі");
-        addTranslation("7. Show citation for my first paper", "7. Citation первой статьи", "7. Бірінші мақаламның citation көрсету");
+        addTranslation("7. Show citation for my first paper", "7. Цитирование первой статьи", "7. Бірінші мақаламның citation көрсету");
         addTranslation("8. Add first paper as diploma project", "8. Добавить статью как диплом", "8. Мақаланы диплом жобасы ретінде қосу");
         addTranslation("9. View diploma papers", "9. Дипломные статьи", "9. Диплом мақалалары");
         addTranslation("10. Back", "10. Назад", "10. Артқа");
@@ -344,9 +340,8 @@ public class ConsoleMenu {
             System.out.println("\n=== University System ===");
             System.out.println("Language: " + currentLanguage);
             System.out.println("1. Login");
-            System.out.println("2. Search (regular expressions)");
-            System.out.println("3. Exit");
-            System.out.println("4. Switch language");
+            System.out.println("2. Exit");
+            System.out.println("3. Switch language");
             int choice = readInt("Choose: ");
 
             switch (choice) {
@@ -354,13 +349,10 @@ public class ConsoleMenu {
                     login();
                     break;
                 case 2:
-                    regexSearch();
-                    break;
-                case 3:
                     saveBeforeExit();
                     running = false;
                     break;
-                case 4:
+                case 3:
                     switchLanguage();
                     break;
                 default:
@@ -567,14 +559,13 @@ public class ConsoleMenu {
             System.out.println("3. View teacher of course");
             System.out.println("4. View marks");
             System.out.println("5. View transcript");
-            System.out.println("6. Get transcript");
-            System.out.println("7. Rate teacher");
-            System.out.println("8. View notifications");
-            System.out.println("9. Student organizations");
-            System.out.println("10. Journals");
-            System.out.println("11. News comments");
-            System.out.println("12. Research menu");
-            System.out.println("13. Logout");
+            System.out.println("6. Rate teacher");
+            System.out.println("7. View notifications");
+            System.out.println("8. Student organizations");
+            System.out.println("9. Journals");
+            System.out.println("10. News comments");
+            System.out.println("11. Research menu");
+            System.out.println("12. Logout");
             switch (readInt("Choose: ")) {
                 case 1:
                     database.getCourses().forEach(System.out::println);
@@ -595,31 +586,28 @@ public class ConsoleMenu {
                     System.out.println(student.getTranscript());
                     break;
                 case 6:
-                    System.out.println(student.getTranscript());
-                    break;
-                case 7:
                     Teacher teacher = chooseTeacher();
                     if (teacher != null) {
                         student.rateTeacher(teacher, readInt("Rating 1-5: "));
                         System.out.println("Rating sent.");
                     }
                     break;
-                case 8:
+                case 7:
                     student.getNotifications().forEach(System.out::println);
                     break;
-                case 9:
+                case 8:
                     studentOrganizationsMenu(student);
                     break;
-                case 10:
+                case 9:
                     journalMenu(student);
                     break;
-                case 11:
+                case 10:
                     newsCommentsMenu(student);
                     break;
-                case 12:
+                case 11:
                     researchMenu(student);
                     break;
-                case 13:
+                case 12:
                     back = true;
                     break;
                 default:
@@ -911,47 +899,6 @@ public class ConsoleMenu {
         ResearchPaper paper = researcher.getPapers().get(0);
         student.addDiplomaPaper(paper);
         System.out.println("Added diploma paper: " + paper);
-    }
-
-    private static void regexSearch() {
-        System.out.println("Authenticate before search.");
-        try {
-            authService.login(readLine("Username: "), readLine("Password: "));
-        } catch (UnauthorizedActionException e) {
-            System.out.println(e.getMessage());
-            return;
-        }
-
-        String regex = readLine("Enter regex: ");
-        Pattern pattern;
-        try {
-            pattern = Pattern.compile(regex, Pattern.CASE_INSENSITIVE);
-        } catch (PatternSyntaxException e) {
-            System.out.println("Invalid regex: " + e.getMessage());
-            authService.logout();
-            return;
-        }
-
-        System.out.println("\nUsers:");
-        database.getUsers().stream()
-                .filter(u -> pattern.matcher(u.getId() + " " + u.getUsername() + " " + u.getFullName() + " " + u.getEmail()).find())
-                .forEach(System.out::println);
-
-        System.out.println("\nCourses:");
-        database.getCourses().stream()
-                .filter(c -> pattern.matcher(c.toString()).find())
-                .forEach(System.out::println);
-
-        System.out.println("\nNews:");
-        database.getNews().stream()
-                .filter(n -> pattern.matcher(n.toString()).find())
-                .forEach(System.out::println);
-
-        System.out.println("\nResearch papers:");
-        researchService.printAllPapers(ResearchPaper.byDate()).stream()
-                .filter(p -> pattern.matcher(p.toString()).find())
-                .forEach(System.out::println);
-        authService.logout();
     }
 
     private static void addCourse(Manager manager) {
