@@ -22,6 +22,11 @@ public class Journal implements Subject, Serializable {
         return name;
     }
 
+    @Override
+    public String toString() {
+        return name + " papers=" + papers.size() + " subscribers=" + subscribers.size();
+    }
+
     public void publish(ResearchPaper paper) {
         papers.add(paper);
         notifyObservers("New paper in " + name + ": " + paper.getTitle());

@@ -33,6 +33,10 @@ public class News implements Serializable, Comparable<News> {
         comments.add(new Comment(author, text));
     }
 
+    public List<Comment> getComments() {
+        return new ArrayList<>(comments);
+    }
+
     @Override
     public int compareTo(News other) {
         if (pinned != other.pinned) {

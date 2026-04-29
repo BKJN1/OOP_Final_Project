@@ -4,8 +4,8 @@ Research-oriented university system implemented in Java for the OOP final projec
 
 ## What is implemented
 
-- Authentication through `AuthService`.
-- User hierarchy: `User`, `Employee`, `Admin`, `Manager`, `Teacher`, `Dean`, `TechSupportSpecialist`, `Student`, `GraduateStudent`.
+- Authentication through `AuthService`, including regex search authentication.
+- User hierarchy: `User`, `Employee`, `Admin`, `Manager`, `Teacher`, `Dean`, `TechSupportSpecialist`, `Student`, `GraduateStudent`, `ResearchEmployee`.
 - Academic models: `Course`, `Lesson`, `Mark`, `Transcript`, `Schedule`, `Enrollment`.
 - Course registration with 21-credit limit and fail-count validation.
 - Teacher workflow: view courses/students, put marks, send complaints to dean.
@@ -15,14 +15,16 @@ Research-oriented university system implemented in Java for the OOP final projec
 - Research workflow: `Researcher`, `ResearchPaper`, `ResearchProject`, `Journal`, h-index calculation, sorted paper printing, citation generation in plain text and BibTeX.
 - Graduate student supervisor validation with custom exception when supervisor h-index is below 3.
 - News with comments and pinned Research news.
-- Journal subscription notifications using Observer pattern.
-- Serialization through `DataManager`.
+- Journal subscription notifications using Observer pattern; all users can subscribe.
+- Serialization through `DataManager`; saved data is loaded on startup when `university.dat` exists.
+- Console localization between `KZ`, `EN`, and `RU` for menus, prompts, and main system messages.
 - Console demo in `Main.java`.
 
 ## Design patterns
 
 - Singleton: `DataManager`.
 - Observer: `Journal`, `Subject`, `Observer`, `Notification`.
+- Factory: `UserFactory`.
 - Service layer: `AuthService`, `CourseService`, `NewsService`, `ReportService`, `ResearchService`.
 - Strategy-style sorting: `Comparator<ResearchPaper>` for sorting by date, citations, and length.
 
@@ -58,6 +60,7 @@ The program starts with the main menu:
 1. Login
 2. Search (regular expressions)
 3. Exit
+4. Switch language
 ```
 
 After login, the program opens a role-specific menu. For example, manager users see manager actions, students see student actions, teachers see teacher actions, and so on.
@@ -67,6 +70,10 @@ Recent menu features:
 - Teachers can use `Manage course` to view course details, update title/credits/type, add lessons, and view lessons.
 - Students can use `Student organizations` to join an organization as a member or become its head.
 - Managers can use `Approve students registration` to approve pending course registration requests.
+- Managers can view employee requests and teachers sorted alphabetically.
+- Users can subscribe/unsubscribe from university journals.
+- Users can add and view news comments.
+- Researchers can view top cited researchers by university, school, and year.
 
 Sample accounts:
 
@@ -80,8 +87,9 @@ Sample accounts:
 | Student | `student` | `1234` |
 | Graduate student | `grad` | `1234` |
 | Tech support | `support` | `1234` |
+| Research employee | `lab` | `1234` |
 
-The regex search checks users, courses, news, and research papers. Example regex queries:
+The regex search asks for authentication and checks users, courses, news, and research papers. Example regex queries:
 
 ```text
 Kim
