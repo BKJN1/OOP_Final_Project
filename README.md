@@ -95,15 +95,6 @@ Sample accounts:
 | Tech support | `support2` | `1234` |
 | Research employee | `researcher1` | `1234` |
 
-The regex search asks for authentication and checks users, courses, news, and research papers. Example regex queries:
-
-```text
-Kim
-CSCI.*
-Research|Analytics
-student
-```
-
 On exit, the application saves current data to `university.dat`.
 
 ## Notes for defense
