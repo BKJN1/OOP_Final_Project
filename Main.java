@@ -71,7 +71,7 @@ public class Main {
                     "Aigerim Graduate", "grad@uni.kz", "SITE");
             GraduateStudent phd = (GraduateStudent) UserFactory.create("GRADUATE_STUDENT", "G2", "grad2", "1234",
                     "Serik PhD Student", "grad2@uni.kz", "SITE");
-            TechSupportSpecialist support = (TechSupportSpecialist) UserFactory.create("SUPPORT", "TS1", "support1", "1234",
+            TechSupportSpecialist support = (TechSupportSpecialist) UserFactory.create("SUPPORT", "TS1", "5", "1234",
                     "Timur Support", "support@uni.kz", "IT");
             TechSupportSpecialist support2 = (TechSupportSpecialist) UserFactory.create("SUPPORT", "TS2", "support2", "1234",
                     "Ayan Support", "support2@uni.kz", "IT");

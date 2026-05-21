@@ -12,6 +12,7 @@ import enums.UrgencyLevel;
 import exceptions.UnauthorizedActionException;
 import interfaces.CanResearch;
 import java.io.PrintStream;
+import java.time.LocalDate;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
@@ -23,12 +24,14 @@ import research.Journal;
 import storage.DataManager;
 import storage.Database;
 import system.News;
+import system.Notification;
 import system.Request;
 import users.Admin;
 import users.Dean;
 import users.Employee;
 import users.GraduateStudent;
 import users.Manager;
+import users.ResearchEmployee;
 import users.Student;
 import users.Teacher;
 import users.TechSupportSpecialist;
@@ -77,6 +80,7 @@ public class ConsoleMenu {
         addTranslation("5. View logs", "5. Посмотреть логи", "5. Логтарды көру");
         addTranslation("6. Journals", "6. Журналы", "6. Журналдар");
         addTranslation("7. Logout", "7. Выйти из аккаунта", "7. Аккаунттан шығу");
+        addTranslation("8. Logout", "8. Выйти из аккаунта", "8. Аккаунттан шығу");
 
         addTranslation("1. View courses", "1. Посмотреть курсы", "1. Курстарды көру");
         addTranslation("2. Add course", "2. Добавить курс", "2. Курс қосу");
@@ -107,6 +111,7 @@ public class ConsoleMenu {
         addTranslation("5. View transcript", "5. Посмотреть транскрипт", "5. Транскрипт көру");
         addTranslation("6. Rate teacher", "6. Оценить преподавателя", "6. Оқытушыны бағалау");
         addTranslation("7. View notifications", "7. Уведомления", "7. Хабарламалар");
+        addTranslation("7. View messages/notifications", "7. Сообщения/уведомления", "7. Хабарламалар/мәлімдемелер");
         addTranslation("8. Student organizations", "8. Студенческие организации", "8. Студенттік ұйымдар");
         addTranslation("9. Journals", "9. Журналы", "9. Журналдар");
         addTranslation("10. News comments", "10. Комментарии к новостям", "10. Жаңалық пікірлері");
@@ -136,12 +141,12 @@ public class ConsoleMenu {
         addTranslation("2. Print my papers by citations", "2. Мои статьи по цитированиям", "2. Мақалаларымды citation бойынша шығару");
         addTranslation("3. Print all university papers by date", "3. Все статьи университета по дате", "3. Университет мақалаларын дата бойынша шығару");
         addTranslation("4. Print top cited researcher", "4. Самый цитируемый исследователь", "4. Ең көп citation алған зерттеуші");
-        addTranslation("5. Print top cited researcher by school", "5. Топ исследователь по школе", "5. Мектеп бойынша топ зерттеуші");
-        addTranslation("6. Print top cited researcher of year", "6. Топ исследователь года", "6. Жылдың топ зерттеушісі");
-        addTranslation("7. Show citation for my first paper", "7. Цитирование первой статьи", "7. Бірінші мақаламның citation көрсету");
-        addTranslation("8. Add first paper as diploma project", "8. Добавить статью как диплом", "8. Мақаланы диплом жобасы ретінде қосу");
-        addTranslation("9. View diploma papers", "9. Дипломные статьи", "9. Диплом мақалалары");
-        addTranslation("10. Back", "10. Назад", "10. Артқа");
+        addTranslation("5. Show citation for my first paper", "5. Цитирование первой статьи", "5. Бірінші мақаламның citation көрсету");
+        addTranslation("6. Add new research paper", "6. Добавить новую научную статью", "6. Жаңа ғылыми мақала қосу");
+        addTranslation("7. Add first paper as diploma project", "7. Добавить статью как диплом", "7. Мақаланы диплом жобасы ретінде қосу");
+        addTranslation("7. Back", "7. Назад", "7. Артқа");
+        addTranslation("8. View diploma papers", "8. Дипломные статьи", "8. Диплом мақалалары");
+        addTranslation("9. Back", "9. Назад", "9. Артқа");
 
         addTranslation("1. View journals", "1. Посмотреть журналы", "1. Журналдарды көру");
         addTranslation("2. Subscribe", "2. Подписаться", "2. Жазылу");
@@ -178,6 +183,17 @@ public class ConsoleMenu {
         addTranslation("Message sent.", "Сообщение отправлено.", "Хабарлама жіберілді.");
         addTranslation("News published.", "Новость опубликована.", "Жаңалық жарияланды.");
         addTranslation("No menu for this role.", "Для этой роли меню нет.", "Бұл рөл үшін мәзір жоқ.");
+        addTranslation("7. View messages from Dean", "7. Просмотр писем от декана", "7. Деканнан келген хабарламаларды көру");
+        addTranslation("8. View messages from Dean", "8. Просмотр писем от декана", "8. Деканнан келген хабарламаларды көру");
+        addTranslation("9. View messages from Dean", "9. Просмотр писем от декана", "9. Деканнан келген хабарламаларды көру");
+        addTranslation("12. View messages from Dean", "12. Просмотр писем от декана", "12. Деканнан келген хабарламаларды көру");
+        addTranslation("13. Logout", "13. Выйти из аккаунта", "13. Аккаунттан шығу");
+        addTranslation("\n=== Research Employee Menu ===", "\n=== Меню научного сотрудника ===", "\n=== Зерттеу қызметкері мәзірі ===");
+        addTranslation("1. Research menu", "1. Меню исследований", "1. Зерттеу мәзірі");
+        addTranslation("2. Journals", "2. Журналы", "2. Журналдар");
+        addTranslation("3. View messages from Dean", "3. Просмотр писем от декана", "3. Деканнан келген хабарламаларды көру");
+        addTranslation("4. Logout", "4. Выйти из аккаунта", "4. Аккаунттан шығу");
+        addTranslation("No new messages from Dean.", "Нет новых сообщений от декана.", "Деканнан жаңа хабарлама жоқ.");
         addTranslation("No organizations.", "Организаций нет.", "Ұйымдар жоқ.");
         addTranslation("No papers.", "Статей нет.", "Мақалалар жоқ.");
         addTranslation("No pending registration selected.", "Заявка на регистрацию не выбрана.", "Тіркелу өтініші таңдалмады.");
@@ -382,6 +398,8 @@ public class ConsoleMenu {
             teacherMenu((Teacher) user);
         } else if (user instanceof TechSupportSpecialist) {
             techSupportMenu((TechSupportSpecialist) user);
+        } else if (user instanceof ResearchEmployee) {
+            researchEmployeeMenu((ResearchEmployee) user);
         } else if (user instanceof Dean) {
             deanMenu((Dean) user);
         } else if (user instanceof GraduateStudent) {
@@ -404,7 +422,8 @@ public class ConsoleMenu {
             System.out.println("4. Remove user");
             System.out.println("5. View logs");
             System.out.println("6. Journals");
-            System.out.println("7. Logout");
+            System.out.println("7. View messages from Dean");
+            System.out.println("8. Logout");
             switch (readInt("Choose: ")) {
                 case 1:
                     database.getUsers().forEach(System.out::println);
@@ -429,6 +448,9 @@ public class ConsoleMenu {
                     journalMenu(admin);
                     break;
                 case 7:
+                    viewDeanMessages(admin);
+                    break;
+                case 8:
                     back = true;
                     break;
                 default:
@@ -452,7 +474,8 @@ public class ConsoleMenu {
             System.out.println("9. View employee requests");
             System.out.println("10. View teachers alphabetically");
             System.out.println("11. Journals");
-            System.out.println("12. Logout");
+            System.out.println("12. View messages from Dean");
+            System.out.println("13. Logout");
             switch (readInt("Choose: ")) {
                 case 1:
                     database.getCourses().forEach(System.out::println);
@@ -492,6 +515,9 @@ public class ConsoleMenu {
                     journalMenu(manager);
                     break;
                 case 12:
+                    viewDeanMessages(manager);
+                    break;
+                case 13:
                     back = true;
                     break;
                 default:
@@ -512,7 +538,8 @@ public class ConsoleMenu {
             System.out.println("6. Send complaint to dean");
             System.out.println("7. Research menu");
             System.out.println("8. Journals");
-            System.out.println("9. Logout");
+            System.out.println("9. View messages from Dean");
+            System.out.println("10. Logout");
             switch (readInt("Choose: ")) {
                 case 1:
                     teacher.getCourses().forEach(System.out::println);
@@ -542,6 +569,9 @@ public class ConsoleMenu {
                     journalMenu(teacher);
                     break;
                 case 9:
+                    viewDeanMessages(teacher);
+                    break;
+                case 10:
                     back = true;
                     break;
                 default:
@@ -560,7 +590,7 @@ public class ConsoleMenu {
             System.out.println("4. View marks");
             System.out.println("5. View transcript");
             System.out.println("6. Rate teacher");
-            System.out.println("7. View notifications");
+            System.out.println("7. View messages/notifications");
             System.out.println("8. Student organizations");
             System.out.println("9. Journals");
             System.out.println("10. News comments");
@@ -593,7 +623,7 @@ public class ConsoleMenu {
                     }
                     break;
                 case 7:
-                    student.getNotifications().forEach(System.out::println);
+                    viewNotifications(student);
                     break;
                 case 8:
                     studentOrganizationsMenu(student);
@@ -626,7 +656,8 @@ public class ConsoleMenu {
             System.out.println("4. Mark request done");
             System.out.println("5. View all requests");
             System.out.println("6. Journals");
-            System.out.println("7. Logout");
+            System.out.println("7. View messages from Dean");
+            System.out.println("8. Logout");
             switch (readInt("Choose: ")) {
                 case 1:
                     support.seeNewRequests(database).forEach(System.out::println);
@@ -647,6 +678,36 @@ public class ConsoleMenu {
                     journalMenu(support);
                     break;
                 case 7:
+                    viewDeanMessages(support);
+                    break;
+                case 8:
+                    back = true;
+                    break;
+                default:
+                    System.out.println("Invalid option.");
+            }
+        }
+    }
+
+    private static void researchEmployeeMenu(ResearchEmployee employee) {
+        boolean back = false;
+        while (!back) {
+            System.out.println("\n=== Research Employee Menu ===");
+            System.out.println("1. Research menu");
+            System.out.println("2. Journals");
+            System.out.println("3. View messages from Dean");
+            System.out.println("4. Logout");
+            switch (readInt("Choose: ")) {
+                case 1:
+                    researchMenu(employee);
+                    break;
+                case 2:
+                    journalMenu(employee);
+                    break;
+                case 3:
+                    viewDeanMessages(employee);
+                    break;
+                case 4:
                     back = true;
                     break;
                 default:
@@ -703,15 +764,14 @@ public class ConsoleMenu {
             System.out.println("2. Print my papers by citations");
             System.out.println("3. Print all university papers by date");
             System.out.println("4. Print top cited researcher");
-            System.out.println("5. Print top cited researcher by school");
-            System.out.println("6. Print top cited researcher of year");
-            System.out.println("7. Show citation for my first paper");
+            System.out.println("5. Show citation for my first paper");
+            System.out.println("6. Add new research paper");
             if (user instanceof GraduateStudent) {
-                System.out.println("8. Add first paper as diploma project");
-                System.out.println("9. View diploma papers");
-                System.out.println("10. Back");
+                System.out.println("7. Add first paper as diploma project");
+                System.out.println("8. View diploma papers");
+                System.out.println("9. Back");
             } else {
-                System.out.println("8. Back");
+                System.out.println("7. Back");
             }
             switch (readInt("Choose: ")) {
                 case 1:
@@ -727,12 +787,6 @@ public class ConsoleMenu {
                     System.out.println(researchService.topCitedResearcher());
                     break;
                 case 5:
-                    System.out.println(researchService.topCitedResearcherBySchool(readLine("School/major/department: ")));
-                    break;
-                case 6:
-                    System.out.println(researchService.topCitedResearcherOfYear(readInt("Year: ")));
-                    break;
-                case 7:
                     if (researcher.getPapers().isEmpty()) {
                         System.out.println("No papers.");
                     } else {
@@ -741,21 +795,24 @@ public class ConsoleMenu {
                         System.out.println(paper.getCitation(Format.BIBTEX));
                     }
                     break;
-                case 8:
+                case 6:
+                    addResearchPaper(researcher);
+                    break;
+                case 7:
                     if (user instanceof GraduateStudent) {
                         addDiplomaPaper((GraduateStudent) user, researcher);
                     } else {
                         back = true;
                     }
                     break;
-                case 9:
+                case 8:
                     if (user instanceof GraduateStudent) {
                         ((GraduateStudent) user).getDiplomaPapers().forEach(System.out::println);
                     } else {
                         System.out.println("Invalid option.");
                     }
                     break;
-                case 10:
+                case 9:
                     if (user instanceof GraduateStudent) {
                         back = true;
                     } else {
@@ -766,6 +823,51 @@ public class ConsoleMenu {
                     System.out.println("Invalid option.");
             }
         }
+    }
+
+    private static void addResearchPaper(Researcher researcher) {
+        Journal journal = chooseJournal();
+        if (journal == null) {
+            System.out.println("No journal selected.");
+            return;
+        }
+        String title = readLine("Title: ");
+        int pages = readInt("Pages: ");
+        String doi = readLine("DOI: ");
+        int citations = readInt("Citations: ");
+        ResearchPaper paper = new ResearchPaper(title, journal, pages, LocalDate.now(), doi, citations);
+        researcher.addPaper(paper);
+        database.addResearchPaper(paper);
+        journal.publish(paper);
+        System.out.println("Research paper published: " + paper);
+    }
+
+    private static void viewNotifications(User user) {
+        List<Notification> notifications = user.getNotifications();
+        if (notifications.isEmpty()) {
+            System.out.println("No messages or notifications.");
+            return;
+        }
+        notifications.forEach(System.out::println);
+    }
+
+    private static void viewDeanMessages(User user) {
+        List<Notification> deanMessages = user.getNotifications().stream()
+                .filter(ConsoleMenu::isMessageFromDean)
+                .toList();
+        if (deanMessages.isEmpty()) {
+            System.out.println("No new messages from Dean.");
+            return;
+        }
+        deanMessages.forEach(System.out::println);
+    }
+
+    private static boolean isMessageFromDean(Notification notification) {
+        return database.getUsers().stream()
+                .filter(Dean.class::isInstance)
+                .map(Dean.class::cast)
+                .map(dean -> "Message from " + dean.getFullName() + ":")
+                .anyMatch(prefix -> notification.getMessage().startsWith(prefix));
     }
 
     private static void newsManagementMenu(Manager manager) {

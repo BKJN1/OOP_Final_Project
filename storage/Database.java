@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import research.Journal;
+import research.ResearchPaper;
 import research.Researcher;
 import system.Log;
 import system.News;
@@ -24,6 +25,7 @@ public class Database implements Serializable {
     private final List<Request> requests = new ArrayList<>();
     private final List<Log> logs = new ArrayList<>();
     private final List<Journal> journals = new ArrayList<>();
+    private List<ResearchPaper> researchPapers = new ArrayList<>();
 
     public void addUser(User user) {
         users.add(user);
@@ -117,5 +119,23 @@ public class Database implements Serializable {
 
     public List<Journal> getJournals() {
         return new ArrayList<>(journals);
+    }
+
+    public void addResearchPaper(ResearchPaper paper) {
+        ensureResearchPapers();
+        if (!researchPapers.contains(paper)) {
+            researchPapers.add(paper);
+        }
+    }
+
+    public List<ResearchPaper> getResearchPapers() {
+        ensureResearchPapers();
+        return new ArrayList<>(researchPapers);
+    }
+
+    private void ensureResearchPapers() {
+        if (researchPapers == null) {
+            researchPapers = new ArrayList<>();
+        }
     }
 }
