@@ -101,9 +101,15 @@ public class ConsoleMenu {
         addTranslation("4. Put mark", "4. Поставить оценку", "4. Баға қою");
         addTranslation("5. Send message to employee", "5. Отправить сообщение сотруднику", "5. Қызметкерге хабарлама жіберу");
         addTranslation("6. Send complaint to dean", "6. Отправить жалобу декану", "6. Деканға шағым жіберу");
+        addTranslation("7. Become researcher", "7. Стать исследователем", "7. Зерттеуші болу");
         addTranslation("7. Research menu", "7. Меню исследований", "7. Зерттеу мәзірі");
+        addTranslation("8. Research menu", "8. Меню исследований", "8. Зерттеу мәзірі");
         addTranslation("8. Journals", "8. Журналы", "8. Журналдар");
+        addTranslation("9. Journals", "9. Журналы", "9. Журналдар");
         addTranslation("9. Logout", "9. Выйти из аккаунта", "9. Аккаунттан шығу");
+        addTranslation("10. View messages from Dean", "10. Просмотр писем от декана", "10. Деканнан келген хабарламаларды көру");
+        addTranslation("10. Logout", "10. Выйти из аккаунта", "10. Аккаунттан шығу");
+        addTranslation("11. Logout", "11. Выйти из аккаунта", "11. Аккаунттан шығу");
 
         addTranslation("2. Register for course", "2. Зарегистрироваться на курс", "2. Курсқа тіркелу");
         addTranslation("3. View teacher of course", "3. Преподаватель курса", "3. Курстың оқытушысы");
@@ -115,7 +121,9 @@ public class ConsoleMenu {
         addTranslation("8. Student organizations", "8. Студенческие организации", "8. Студенттік ұйымдар");
         addTranslation("9. Journals", "9. Журналы", "9. Журналдар");
         addTranslation("10. News comments", "10. Комментарии к новостям", "10. Жаңалық пікірлері");
+        addTranslation("11. Become researcher", "11. Стать исследователем", "11. Зерттеуші болу");
         addTranslation("11. Research menu", "11. Меню исследований", "11. Зерттеу мәзірі");
+        addTranslation("12. Research menu", "12. Меню исследований", "12. Зерттеу мәзірі");
         addTranslation("12. Logout", "12. Выйти из аккаунта", "12. Аккаунттан шығу");
 
         addTranslation("1. View new requests", "1. Новые запросы", "1. Жаңа сұраныстар");
@@ -210,7 +218,9 @@ public class ConsoleMenu {
         addTranslation("Title updated.", "Название обновлено.", "Атауы жаңартылды.");
         addTranslation("Unsubscribed.", "Подписка отменена.", "Жазылым тоқтатылды.");
         addTranslation("User removed if id existed.", "Пользователь удалён, если id существовал.", "ID бар болса, пайдаланушы жойылды.");
+        addTranslation("You are already a researcher.", "Вы уже исследователь.", "Сіз зерттеушісіз.");
         addTranslation("You are head of this organization.", "Вы глава этой организации.", "Сіз осы ұйымның басшысысыз.");
+        addTranslation("You are now a researcher.", "Теперь вы исследователь.", "Енді сіз зерттеушісіз.");
     }
 
     public ConsoleMenu(Database database) {
@@ -536,10 +546,11 @@ public class ConsoleMenu {
             System.out.println("4. Put mark");
             System.out.println("5. Send message to employee");
             System.out.println("6. Send complaint to dean");
-            System.out.println("7. Research menu");
-            System.out.println("8. Journals");
-            System.out.println("9. View messages from Dean");
-            System.out.println("10. Logout");
+            System.out.println("7. Become researcher");
+            System.out.println("8. Research menu");
+            System.out.println("9. Journals");
+            System.out.println("10. View messages from Dean");
+            System.out.println("11. Logout");
             switch (readInt("Choose: ")) {
                 case 1:
                     teacher.getCourses().forEach(System.out::println);
@@ -563,15 +574,18 @@ public class ConsoleMenu {
                     sendComplaint(teacher);
                     break;
                 case 7:
-                    researchMenu(teacher);
+                    becomeResearcher(teacher, teacher);
                     break;
                 case 8:
-                    journalMenu(teacher);
+                    researchMenu(teacher);
                     break;
                 case 9:
-                    viewDeanMessages(teacher);
+                    journalMenu(teacher);
                     break;
                 case 10:
+                    viewDeanMessages(teacher);
+                    break;
+                case 11:
                     back = true;
                     break;
                 default:
@@ -594,8 +608,9 @@ public class ConsoleMenu {
             System.out.println("8. Student organizations");
             System.out.println("9. Journals");
             System.out.println("10. News comments");
-            System.out.println("11. Research menu");
-            System.out.println("12. Logout");
+            System.out.println("11. Become researcher");
+            System.out.println("12. Research menu");
+            System.out.println("13. Logout");
             switch (readInt("Choose: ")) {
                 case 1:
                     database.getCourses().forEach(System.out::println);
@@ -635,9 +650,12 @@ public class ConsoleMenu {
                     newsCommentsMenu(student);
                     break;
                 case 11:
-                    researchMenu(student);
+                    becomeResearcher(student, student);
                     break;
                 case 12:
+                    researchMenu(student);
+                    break;
+                case 13:
                     back = true;
                     break;
                 default:
@@ -823,6 +841,15 @@ public class ConsoleMenu {
                     System.out.println("Invalid option.");
             }
         }
+    }
+
+    private static void becomeResearcher(CanResearch candidate, User owner) {
+        if (candidate.isResearcher()) {
+            System.out.println("You are already a researcher.");
+            return;
+        }
+        candidate.becomeResearcher(owner);
+        System.out.println("You are now a researcher.");
     }
 
     private static void addResearchPaper(Researcher researcher) {
